@@ -1,0 +1,36 @@
+{
+  "appId": "com.example.synthetic",
+  "fetchedAt": "2026-01-01T12:00:00.000Z",
+  "stats": {
+    "total": 1,
+    "byLanguage": {
+      "en": 1
+    },
+    "byScore": {
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 1
+    },
+    "byMonth": {
+      "2026-01": 1
+    }
+  },
+  "reviews": [
+    {
+      "id": "synthetic-review-001",
+      "userName": "Example Reviewer",
+      "date": "2026-01-01T10:00:00.000Z",
+      "score": 5,
+      "title": null,
+      "text": "This is a fully synthetic review used only to demonstrate the data format.",
+      "replyText": "This is a synthetic developer reply.",
+      "replyDate": "2026-01-01T11:00:00.000Z",
+      "version": "1.0.0",
+      "thumbsUp": 0,
+      "lang": "en",
+      "url": "https://play.google.com/store/apps/details?id=com.example.synthetic&reviewId=synthetic-review-001"
+    }
+  ]
+}

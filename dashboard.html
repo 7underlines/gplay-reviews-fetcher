@@ -233,6 +233,7 @@
     <div class="reviews-list" id="reviewsList"></div>
   </div>
   
+  <script src="dashboard.js"></script>
   <script>
     let allReviews = [];
     let currentFilter = 'all';
@@ -295,45 +296,14 @@
         return;
       }
       
-      container.innerHTML = filtered.map(review => {
-        const stars = '★'.repeat(review.score) + '☆'.repeat(5 - review.score);
-        const starsClass = review.score <= 2 ? 'low' : review.score === 3 ? 'medium' : '';
-        const needsAttention = !review.replyText;
-        const textClass = needsAttention ? 'needs-attention' : 'responded';
-        const thumbsClass = review.thumbsUp >= 2 ? 'high' : '';
-        
-        const langNames = {
-          en: '🇺🇸', de: '🇩🇪', fr: '🇫🇷', es: '🇪🇸', it: '🇮🇹',
-          ja: '🇯🇵', ko: '🇰🇷', zh: '🇨🇳', pt: '🇧🇷', ru: '🇷🇺'
-        };
-        
-        return `
-          <div class="review-card">
-            <div class="review-header">
-              <span class="review-user">${review.userName}</span>
-              <div class="review-meta">
-                <span class="stars ${starsClass}">${stars}</span>
-                <span class="review-date">${new Date(review.date).toLocaleDateString()}</span>
-                <span class="review-lang">${langNames[review.lang] || review.lang}</span>
-                ${review.version ? `<span class="review-version">v${review.version}</span>` : ''}
-              </div>
-            </div>
-            <div class="review-text ${textClass}">${review.text}</div>
-            ${review.replyText ? `
-              <div class="reply-text">↳ Dev: ${review.replyText}</div>
-            ` : ''}
-            <div class="review-footer">
-              <span class="thumbs-up ${thumbsClass}">
-                👍 ${review.thumbsUp}
-              </span>
-              <div>
-                ${!review.replyText ? '<span class="reply-badge">Needs Reply</span>' : ''}
-                <a href="${review.url}" target="_blank" class="review-link">View on Play Store →</a>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
+      const langNames = {
+        en: '🇺🇸', de: '🇩🇪', fr: '🇫🇷', es: '🇪🇸', it: '🇮🇹',
+        ja: '🇯🇵', ko: '🇰🇷', zh: '🇨🇳', pt: '🇧🇷', ru: '🇷🇺'
+      };
+
+      container.innerHTML = filtered
+        .map(review => ReviewDashboard.buildReviewCard(review, langNames))
+        .join('');
     }
     
     // Filter buttons

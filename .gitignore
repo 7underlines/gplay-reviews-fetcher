@@ -1,0 +1,4 @@
+node_modules/
+reviews.json
+*.local.json
+.DS_Store

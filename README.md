@@ -1,89 +1,80 @@
 # Google Play Reviews Fetcher + Dashboard
 
-Fetch reviews from Google Play in multiple languages, deduplicate them, and view in a simple dashboard.
+Fetch Google Play reviews in multiple languages, deduplicate them, and inspect them locally in a small dashboard.
+
+## Privacy
+
+Review exports contain usernames, stable review IDs, timestamps, free-form text, developer replies, app versions, and direct links. Treat generated exports as private working data:
+
+- `reviews.json` is ignored by Git and must not be committed or published.
+- `reviews.example.json` contains fully synthetic demonstration data.
+- Do not enable GitHub Pages with real review exports.
+- Delete local exports when they are no longer needed.
 
 ## Setup
 
 ```bash
-npm install
+npm ci
 ```
 
-## Fetch Reviews
+## Fetch reviews
 
 ```bash
-# Fetch reviews for default app
-node index.js
+# Fetch reviews for the default app into the ignored reviews.json file
+npm run fetch
 
-# Fetch reviews for specific app
-node index.js com.thomaspeissl.quick_dungeon_crawler_od.twa
+# Fetch reviews for a specific app
+node index.js com.example.app
 
-# Specify output file
-node index.js com.yourapp.id reviews.json
+# Specify another local output file
+node index.js com.example.app reviews.local.json
 ```
 
-This will:
-1. Fetch reviews from 10 languages (en, de, fr, es, it, ja, ko, zh, pt, ru)
-2. Deduplicate them
-3. Save to `reviews.json`
-4. Show summary stats in the terminal
+The fetcher:
+
+1. retrieves reviews for ten languages (`en`, `de`, `fr`, `es`, `it`, `ja`, `ko`, `zh`, `pt`, `ru`),
+2. deduplicates them,
+3. saves the result locally, and
+4. prints summary statistics.
 
 ## Dashboard
 
-Open `dashboard.html` in your browser to view reviews visually.
-
-Features:
-- 📊 Stats overview (total, unanswered, negative, avg score)
-- 🔍 Filter by: All, Unanswered, 1-2 Stars, 4-5 Stars, High Impact
-- 👍 Thumbs up count (high impact indicator)
-- 🌐 Language flags
-- 🔗 Direct link to each review on Play Store
-
-**Note:** The dashboard reads `reviews.json` - run `node index.js` first to fetch fresh data.
-
-## GitHub Pages Hosting
-
-Push to a GitHub repo and enable GitHub Pages to host the dashboard online:
+After fetching, serve the repository locally and open the dashboard:
 
 ```bash
-git add .
-git commit -m "Add dashboard"
-git push
+python3 -m http.server 8000
 ```
 
-Then enable Pages in repo Settings → Pages → Source: master branch.
+Then visit `http://localhost:8000/dashboard.html`. The dashboard reads the ignored local `reviews.json` file. To preview the synthetic example instead, copy it locally first:
 
-## Output Format
+```bash
+cp reviews.example.json reviews.json
+```
 
-`reviews.json` contains:
+Review content is treated as untrusted input. The dashboard escapes review text and only links to HTTPS Google Play review URLs.
 
-```json
-{
-  "appId": "com.example.app",
-  "fetchedAt": "2026-04-13T12:00:00.000Z",
-  "stats": {
-    "total": 150,
-    "byLanguage": { "en": 50, "de": 20, ... },
-    "byScore": { "1": 5, "2": 10, "3": 25, "4": 60, "5": 50 },
-    "byMonth": { "2026-04": 12, "2026-03": 35, ... }
-  },
-  "reviews": [
-    {
-      "id": "abc123",
-      "userName": "John D.",
-      "date": "2026-04-10T12:00:00.000Z",
-      "score": 4,
-      "text": "Great app but needs...",
-      "replyText": "Thanks for feedback!",
-      "replyDate": "2026-04-11T...",
-      "version": "3.8.2",
-      "thumbsUp": 3,
-      "lang": "en",
-      "url": "https://play.google.com/..."
-    }
-  ]
-}
+## Output format
+
+See `reviews.example.json` for the complete, fully synthetic schema. A review may contain:
+
+- `id`
+- `userName`
+- `date`
+- `score`
+- `title`
+- `text`
+- `replyText` and `replyDate`
+- `version`
+- `thumbsUp`
+- `lang`
+- `url`
+
+## Tests
+
+```bash
+npm test
 ```
 
 ## Note
 
-Uses the unofficial `google-play-scraper` package. May break if Google changes their API.
+This project uses the unofficial `google-play-scraper` package and may require changes if Google modifies its API. Before collecting or processing review data, check the applicable Google Play terms and your legal basis for doing so.
